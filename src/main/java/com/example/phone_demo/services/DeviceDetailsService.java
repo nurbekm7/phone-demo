@@ -21,8 +21,7 @@ public class DeviceDetailsService {
         this.restTemplate = restTemplateBuilder.build();
     }
 
-    public PhoneDTO getPhoneDeviceDetails(String deviceName) throws InterruptedException
-    {
+    public PhoneDTO getPhoneDeviceDetails(String deviceName) throws InterruptedException {
         log.debug("getPhoneDeviceDetails starts");
 
         PhoneDTO phoneDTO = restTemplate

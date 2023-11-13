@@ -10,11 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 
 
 @RestController
@@ -27,9 +28,6 @@ public class PhoneController {
     @Autowired
     private DeviceDetailsService deviceDetailsService;
 
-    @Autowired
-    private JavaMailSender emailSender;
-
     @Value("${phone.demo.host}")
     private String host;
 
@@ -37,21 +35,17 @@ public class PhoneController {
 
     @GetMapping("/healthcheck")
     public ResponseEntity<String> healthcheck() {
-      return new ResponseEntity<>("I'm ok", HttpStatus.OK);
+        return new ResponseEntity<>("I'm ok", HttpStatus.OK);
     }
 
     @GetMapping("/phones")
-    public ResponseEntity<List<Phone>> getAllPhones(@RequestParam(required = false) String name) {
-        try{
-            log.info("Received request [getAllPhones] with filter param: " + name);
-            List<Phone> phones = new ArrayList<>();
+    public ResponseEntity<List<Phone>> getAllPhones() {
+        try {
+            log.info("Received request [getAllPhones]");
 
-            if(name == null)
-                phones.addAll(phoneRepository.findAll());
-            else
-                phones.addAll(phoneRepository.findByName(name));
+            List<Phone> phones = new ArrayList<>(phoneRepository.findAll());
 
-            if(phones.isEmpty()) {
+            if (phones.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             }
 
@@ -65,7 +59,7 @@ public class PhoneController {
     public ResponseEntity<Phone> getPhoneById(@PathVariable("id") long id) throws InterruptedException {
         log.info("Received request [getPhoneById] with id: " + id);
         Optional<Phone> phone = phoneRepository.findById(id);
-        if(phone.isPresent()) {
+        if (phone.isPresent()) {
             PhoneDTO phoneDTO = deviceDetailsService.getPhoneDeviceDetails(phone.get().getName());
             phone.get().setTechnology(phoneDTO.getTechnology());
             phone.get().set_2gBands(phoneDTO.get_2g_bands());
@@ -96,31 +90,15 @@ public class PhoneController {
         log.info("Received request [updatePhone] with id: " + id + " and phone: " + phone);
 
         Optional<Phone> phoneData = phoneRepository.findById(id);
-        if(phoneData.isPresent() && !phone.getUserEmail().equals("phone-demo@gmail.com")) {
-            String hash = UUID.randomUUID().toString();
-            SimpleMailMessage message = new SimpleMailMessage();
-            message.setFrom("noreply@demo.com");
-            message.setTo(phone.getUserEmail());
-            message.setSubject("Verification of phone device booking");
-            message.setText("Please click on the link to book the phone device "+phone.getName()+ ":"
-                    +host + "phone/verification"
-                    +"?email="+phone.getUserEmail()
-                    +"&username="+phone.getUserName()
-                    +"&available="+phone.isAvailable()
-                    +"&hash="+ hash);
-            emailSender.send(message);
-            phoneData.get().setVerificationHash(hash);
-            phoneRepository.save(phoneData.get());
-            return new ResponseEntity<>("Please check your email to complete booking", HttpStatus.OK);
-        } else if (phoneData.isPresent() && phone.getUserEmail().equals("phone-demo@gmail.com")) {
+        if (phoneData.isPresent()) {
             phoneData.get().setAvailable(phone.isAvailable());
             phoneData.get().setBookedTime(new Date());
+            phoneData.get().setName(phone.getName());
             phoneData.get().setUserEmail(phone.getUserEmail());
             phoneData.get().setUserName(phone.getUserName());
             phoneRepository.save(phoneData.get());
-            return new ResponseEntity<>("Phone successfully updated",HttpStatus.OK);
-        }
-        else {
+            return new ResponseEntity<>("Phone successfully updated", HttpStatus.OK);
+        } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
@@ -135,7 +113,6 @@ public class PhoneController {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
 
 
 }

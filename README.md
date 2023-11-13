@@ -36,7 +36,6 @@ This is the phone demo application, which provides the REST API for booking the 
    
     or you can find all endpoints in [swagger-ui](http://localhost:8080/swagger-ui/#/phone-controller) 
    
-   NOTE: to use enpoints, you need to add  header 'x-auth-api-key: token'
 
 
 
