@@ -23,6 +23,8 @@ This is the phone demo application, which provides the REST API for booking the 
     - SPRING_DATASOURCE_PASSWORD={YOUR_DATASOURCE_PASSWORD}
     - SPRING_JPA_HIBERNATE_DDL_AUTO=update
 
+`` SPRING_DATASOURCE_PASSWORD=123;SPRING_DATASOURCE_URL=jdbc:postgresql://127.0.0.1:5432/phones;SPRING_DATASOURCE_USERNAME=postgres;SPRING_JPA_HIBERNATE_DDL_AUTO=update ``
+
 
 5. After you run the application, you need to create the Phone entity:
 ``curl --location --request POST 'http://localhost:8080/api/phone' \
