@@ -14,6 +14,7 @@ import java.util.Date;
 @NoArgsConstructor
 public class Phone {
 
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
