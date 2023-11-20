@@ -19,7 +19,7 @@ class PhoneDemoApplicationTests {
 
     @Test
     public void shouldReturnDefaultMessage() throws Exception {
-        this.mockMvc.perform(get("/api/healthcheck")).andDo(print()).andExpect(status().isForbidden());
+        this.mockMvc.perform(get("/api/healthcheck")).andDo(print()).andExpect(status().isOk());
     }
 
 }
