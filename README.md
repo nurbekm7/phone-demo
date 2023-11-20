@@ -28,7 +28,6 @@ This is the phone demo application, which provides the REST API for booking the 
 
 5. After you run the application, you need to create the Phone entity:
 ``curl --location --request POST 'http://localhost:8080/api/phone' \
-   --header 'x-auth-api-key: token' \
    --header 'Content-Type: application/json' \
    --data-raw '{
    "name": "Nokia 3310",
@@ -36,19 +35,5 @@ This is the phone demo application, which provides the REST API for booking the 
    "userEmail": "userEmail@gmail.com"
    }'``
    
-    or you can find all endpoints in [swagger-ui](http://localhost:8080/swagger-ui/#/phone-controller) 
+    or you can find all endpoints in [swagger-ui](http://localhost:8080/swagger-ui/index.html) 
    
-
-
-
-6. To book/de-reserve the phone you need to send [updatePhone](http://localhost:8080/swagger-ui/#/phone-controller/updatePhoneUsingPUT) request with following body: 
-   ``{
-   "name": "Nokia 3310",
-   "userName": "testUser",
-   "userEmail": "nurbekm7@gmail.com",
-   "available": false
-   }``, where 
-   - name - is the phone Device Name
-    - userName - is the name of the user who want to book
-    - userEmail - is email of user who want to book. Note: if you want to skip verification with email, just use phone-demo@gmail.com 
-    - available - is the flag of availability, if false, than phone is booked 
