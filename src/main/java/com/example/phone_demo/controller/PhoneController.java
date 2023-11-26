@@ -39,7 +39,7 @@ public class PhoneController {
     }
 
     @GetMapping("/phones")
-    public ResponseEntity<List<Phone>> getAllPhones() {
+    public ResponseEntity<?> getAllPhones() {
         try {
             log.info("Received request [getAllPhones]");
 
@@ -51,6 +51,7 @@ public class PhoneController {
 
             return new ResponseEntity<>(phones, HttpStatus.OK);
         } catch (Exception e) {
+            log.error("Exception: " + e.getMessage());
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
